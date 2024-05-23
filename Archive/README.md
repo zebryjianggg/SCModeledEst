@@ -37,51 +37,10 @@ acs_housing = pd.read_csv("path_to_housing_data.csv")
 combined_data = pd.merge(acs_person, acs_housing, on='SERIALNO', how='left')
 ```
 
-## DataToolBox Class
-This class provides tools for data manipulation and analysis. Here is a brief overview of its methods:
-
-```python
-class DataToolBox:
-    def __init__(self, data):
-        self.data = data
-
-    def return_data(self):
-        return self.data
-
-    def data_desc(self):
-        temp = self.data.shape
-        print(f"{temp[0]} observations; {temp[1]} variables")
-
-    def data_exclude(self, condition):
-        temp = self.data.query(condition)
-        self.data = temp
-        print(f"Data filtered with condition: {condition}")
-
-    def freq_1way(self, col_name):
-        counts = self.data[col_name].value_counts()
-        print(counts)
-```
-
-### Example usage of DataToolBox:
-
-```python
-# Assuming 'combined_data' is a pandas DataFrame
-toolbox = DataToolBox(combined_data)
-
-# Get data description
-toolbox.data_desc()
-
-# Exclude some data based on a condition
-toolbox.data_exclude("age > 50")
-
-# Print frequency of a column
-toolbox.freq_1way('age')
-```
-
 ## Features
 - Data loading from CSV files.
 - Merging of person and housing datasets.
-- Preparation of datasets for analysis using the DataToolBox class.
+- Preparation of datasets for analysis.
 
 ## Contributing
 Contributions to the project are welcome! Please fork the repository and submit a pull request with your additions.
