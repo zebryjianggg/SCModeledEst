@@ -1,2 +1,5 @@
 *.sas7bdat
+*.csv
+*.dta
+*.dta
 Data/
