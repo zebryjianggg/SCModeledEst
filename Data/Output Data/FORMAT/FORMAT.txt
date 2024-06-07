@@ -1,0 +1,11 @@
+    FORMAT SC_SEX SC_SEX.
+           SC_POVERTY SC_POVERTY.
+           SC_MARIT SC_MARIT.
+           SC_EMP SC_EMP.
+           SC_HOUSING SC_HOUSING.
+           SC_RACE_ETHI SC_RACE_ETHI.
+           SC_CIT SC_CIT.
+           SC_EDU SC_EDU.
+           SC_INS SC_INS.
+           SC_AGE_CAT SC_AGE_CAT.
+           SC_HISP SC_HISP.;

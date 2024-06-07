@@ -1,0 +1,64 @@
+PROC FORMAT;
+    VALUE SC_SEX
+        1 = "Male"
+        2 = "Female";
+
+    VALUE SC_POVERTY
+        1 = "Below poverty level"
+        2 = "100%-199% of poverty level"
+        3 = "200%-299% of poverty level"
+        4 = "300% and above of poverty level";
+
+    VALUE SC_MARIT
+        1 = "Married"
+        2 = "Widowed"
+        3 = "Divorced"
+        4 = "Separated"
+        5 = "Never married/Other";
+
+    VALUE SC_EMP
+        1 = "Employed"
+        2 = "Unemployed"
+        3 = "Not in labor force";
+
+    VALUE SC_HOUSING
+        1 = "Owner-occupied"
+        2 = "Renter-occupied";
+
+    VALUE SC_RACE_ETHI
+        1 = "Not Hispanic"
+        2 = "White alone"
+        3 = "Black or African American alone"
+        4 = "American Indian and Alaska Native alone"
+        5 = "Asian alone"
+        6 = "Native Hawaiian and Other Pacific Islander alone"
+        7 = "Some other race alone, or two or more races";
+
+    VALUE SC_CIT
+        1 = "Native"
+        2 = "Naturalized citizen"
+        3 = "Not a citizen";
+
+    VALUE SC_EDU
+        1 = "Less than high school"
+        2 = "High school graduate"
+        3 = "Some college or associate's degree"
+        4 = "Bachelor's degree or higher";
+
+    VALUE SC_INS
+        1 = "Insured"
+        2 = "Uninsured";
+
+    VALUE SC_AGE_CAT
+        0 = "Under 18"
+        1 = "18-24"
+        2 = "25-34"
+        3 = "35-44"
+        4 = "45-54"
+        5 = "55-64"
+        6 = "65 and over";
+
+    VALUE SC_HISP
+        1 = "Non-Hispanic"
+        2 = "Hispanic";
+RUN;
