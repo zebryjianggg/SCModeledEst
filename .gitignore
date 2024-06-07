@@ -1,5 +1,6 @@
 *.sas7bdat
 *.csv
 *.dta
-*.dta
-Data/
+*.zip
+*.xlsx
+.DS_Store
