@@ -1,119 +1,47 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Jun  6 21:38:22 2024
+#!/usr/bin/env python
+# coding: utf-8
 
-@author: zheyujiang
-"""
+# Environment Set-up
 
-# import packages
+# In[1]:
+
+
 import pandas as pd
+# import pyreadstat
 from sas7bdat import SAS7BDAT
 import numpy as np
 from tabulate import tabulate
 import os
 import datetime
 import random
+# from typing import List, Union, Optional
 
 
-# import acs pums data 
+# Importing Data
+
+# In[2]:
+
 acs_raw_person  = pd.read_csv("Data/ACS_5YR/2018_2022/csv_pca/psam_p06.csv")
 acs_raw_housing = pd.read_csv('Data/ACS_5YR/2018_2022/csv_hca/psam_h06.csv')
-# merge acs person and housing data 
+
+
+# In[3]:
+
+
 acs_raw = pd.merge(acs_raw_person, acs_raw_housing, on='SERIALNO', how='left')
 
-# import chis data
+
+# In[4]:
+
+
 with SAS7BDAT('Data/CHIS Dummy/Adult 2022/dummy_adult.sas7bdat') as file:
     chis_raw = file.to_data_frame()
-    
 
-# =============================================================================
-# ### Class: DataToolBox
-# 
-# **Inputs:**
-# - `data`: A pandas DataFrame that contains the data to be analyzed and manipulated.
-# 
-# **Description:**
-# The `DataToolBox` class provides various methods for data manipulation and analysis, including data exclusion, frequency distributions, data construction, and exporting data to different formats.
-# 
-# **Functions:**
-# 
-# 1. **return_data**
-#    - **Inputs:** None
-#    - **Description:** Returns the current state of the data stored in the toolbox.
-# 
-# 2. **data_desc**
-#    - **Inputs:** None
-#    - **Description:** Prints a description of the current dataset, including the number of observations (rows) and variables (columns).
-# 
-# 3. **data_exclude**
-#    - **Inputs:**
-#      - `condition`: A string representing the condition for filtering the data.
-#    - **Description:** Excludes observations from the data based on a given condition and updates the dataset.
-# 
-# 4. **freq_1way**
-#    - **Inputs:**
-#      - `col_name`: The name of the column for which the frequency distribution is to be calculated.
-#      - `weight_col` (Optional): The name of the column to be used for weighting the frequency and percentages.
-#      - `include_unweighted` (Optional): Whether to include unweighted results alongside weighted results.
-#    - **Description:** Prints the frequency count and percentage distribution of a single column, optionally including weighted results.
-# 
-# 5. **freq_2way**
-#    - **Inputs:**
-#      - `col_name_1`: The name of the first column.
-#      - `col_name_2`: The name of the second column.
-#      - `exclude_equal` (Optional): Whether to exclude rows where values in the first column equal values in the second column.
-#    - **Description:** Prints the two-way frequency table of two columns.
-# 
-# 6. **freq_multiway**
-#    - **Inputs:**
-#      - `columns`: A list of column names to be included in the multi-way frequency table.
-#      - `exclude_zeros` (Optional): Whether to exclude rows where the count is zero.
-#      - `exclude_equal` (Optional): Whether to exclude rows where all values in the columns are equal.
-#    - **Description:** Prints the multi-way frequency table of multiple columns.
-# 
-# 7. **data_construct**
-#    - **Inputs:**
-#      - `col_name`: Name of the new column to be added.
-#      - `conditions_str`: A list of conditions (as strings) that determine the value to be assigned.
-#      - `choices`: A list of values or column names to be assigned based on the conditions.
-#      - `default` (Optional): The default value or column name to be assigned if none of the conditions are met. Default is -1.
-#    - **Description:** Constructs a new column in the data based on multiple conditions.
-# 
-# 8. **copy_column**
-#    - **Inputs:**
-#      - `source_col`: The name of the source column whose values are to be copied.
-#      - `target_col`: The name of the target column to which the values will be copied.
-#    - **Description:** Copies the values from one column to another, preserving the original column.
-# 
-# 9. **fill_all_nans**
-#    - **Inputs:**
-#      - `fill_value`: The value to use for replacing NaNs across all columns.
-#    - **Description:** Replaces NaN values across all columns of the DataFrame with a specified value.
-# 
-# 10. **select_columns**
-#     - **Inputs:**
-#       - `col_list` (Optional): A list of column names to be retained in the dataset.
-#       - `prefixes` (Optional): A list of common prefixes for column names to be retained.
-#     - **Description:** Selects columns based on a list or common prefixes and updates the dataset.
-# 
-# 11. **export_data**
-#     - **Inputs:**
-#       - `file_name`: Name of the file without the extension.
-#       - `format`: Format of the file to save ('excel', 'csv', 'stata', 'r', 'spss', 'sql').
-#       - `include_freq_report` (Optional): Whether to include a frequency report as a separate file.
-#       - `max_categories` (Optional): Maximum number of categories to include in the frequency reports for each variable.
-#       - `folder_path` (Optional): The directory to save the file.
-#     - **Description:** Exports the data to a specified format and optionally creates a frequency report for each variable.
-# 
-# 12. **export_freq_1way**
-#     - **Inputs:**
-#       - `col_name`: Column name for frequency calculation.
-#       - `max_categories` (Optional): Maximum number of categories to include.
-#     - **Description:** Generates a DataFrame of frequency counts and percentages for a column, with an optional limit on categories, specifically designed for exporting data.
-# =============================================================================
 
-    
+# Data Manipulation Toolbox - DataToolBox
+
+# In[5]:
+
 
 class DataToolBox:
     def __init__(self, data):
@@ -161,6 +89,34 @@ class DataToolBox:
 
         self.data = temp
 
+#     def freq_1way(self, col_name):
+#         """
+#         Print the frequency count and percentage distribution of a single column, sorted by index,
+#         and display it in a formatted table with borders. Rows with a count of zero are not shown.
+
+#         :param col_name: The name of the column for which the frequency distribution is to be calculated.
+#         """
+#         # Get counts and sort by index
+#         counts = self.data[col_name].value_counts(dropna=False).sort_index()
+#         # Calculate percentages
+#         percentages = (counts / counts.sum()) * 100
+#         # Combine counts and percentages into a single DataFrame for better display
+#         frequency_df = pd.DataFrame({
+#             'Counts': counts,
+#             'Percentage': percentages
+#         })
+
+#         # Filter out rows with zero counts and reset the index
+#         frequency_df = frequency_df[frequency_df['Counts'] > 0].reset_index()
+
+#         # Print results using tabulate for better formatting
+#         print("---------Frequency Distribution for", col_name, "----------")
+#         print(
+#             tabulate(frequency_df,
+#                      headers='keys',
+#                      tablefmt='grid',
+#                      showindex=False))
+#         print("")
     def freq_1way(self, col_name, weight_col=None, include_unweighted=False):
         """
         Print the frequency count and percentage distribution of a single column, sorted by index,
@@ -435,7 +391,17 @@ class DataToolBox:
             self.data.to_csv(full_file_path, index=False)
         elif format == 'stata':
             self.data.to_stata(full_file_path)
-
+# =============================================================================
+#         elif format == 'r':
+#             self.data.to_pickle(full_file_path)
+#         elif format == 'spss':
+#             import pyreadstat  # Requires 'pyreadstat' module for SPSS
+#             pyreadstat.write_sav(self.data, full_file_path)
+# =============================================================================
+# =============================================================================
+#         elif format == 'sql':
+#             self.data.to_sql(name='table_name', con=engine, if_exists='replace', index=False)
+# =============================================================================
 
         # Optionally generate a frequency report
         if include_freq_report:
@@ -468,14 +434,10 @@ class DataToolBox:
         return frequency_df
 
 
+# In[ ]:
 
-# =============================================================================
-# edit ACS data
-#     determine if live in group quarters - exclude to align with CHIS sample scheme 
-#     change all NaN to -0
-# 
-# =============================================================================
-acs_working = acs_raw.copy()
+
+acs_working = acs_raw
 
 conditions = [
     acs_raw['SERIALNO'].str[4:6] == 'GQ',  # Condition for 'GQ'
@@ -486,6 +448,11 @@ choices = [1, 0]
 
 acs_working['INGRPQ'] = np.select(conditions, choices, default = -1)
 
+# ACS Processing
+
+# In[ ]:
+
+
 acs = DataToolBox(acs_working)
 acs.data_desc()
 acs.data_exclude('INGRPQ == 0')
@@ -493,37 +460,44 @@ acs.data_exclude('AGEP >= 18')
 acs.fill_all_nans(-9)
 
 
-# =============================================================================
-# chis data - quick summary 
-# =============================================================================
+# CHIS Processing
+
+# In[ ]:
+
+
 chis = DataToolBox(chis_raw)
 chis.data_desc()
 
 
+# In[ ]:
 
-# =============================================================================
-# GENDER
-#     sc_sex
-#         chis: SRSEX
-#         acs: SEX
-# =============================================================================
+
 acs.data_construct("sc_sex", ['SEX == 1', "SEX == 2"], [1,2])
 chis.data_construct('sc_sex', ["SRSEX == 1", "SRSEX == 2"], [1,2])
 
-# acs.freq_2way('SEX', "sc_sex")
-# chis.freq_2way('SRSEX', "sc_sex")
+acs.freq_2way('SEX', "sc_sex")
+chis.freq_2way('SRSEX', "sc_sex")
+
+
+# In[ ]:
+
 
 acs.freq_1way('sc_sex', "PWGTP", include_unweighted=True)
 
 
-# =============================================================================
-# AGE - Continuous
-#     sc_age_cont
-#         chis: srage 
-#         acs: agep
-# =============================================================================
+# In[ ]:
+
+
 acs.data_construct("sc_age_cont", ['AGEP <=99'], ['AGEP'])
 chis.data_construct('sc_age_cont', ['SRAGE < 99', 'SRAGE >= 99'], ['SRAGE', 99])
+
+# =============================================================================
+# acs.freq_2way('AGEP','sc_age_cont', exclude_equal=True)
+# chis.freq_2way('SRAGE', 'sc_age_cont', exclude_equal=True)
+# 
+# =============================================================================
+
+# In[ ]:
 
 
 acs.data_construct('sc_age_cat', [
@@ -536,184 +510,167 @@ chis.data_construct('sc_age_cat', [
     'SRAGE >= 35 & SRAGE < 45', 'SRAGE >= 45 & SRAGE < 55',
     'SRAGE >= 55 & SRAGE <= 64', 'SRAGE >= 65'
 ], list(range(7)))
-
+# =============================================================================
 # acs.freq_2way('AGEP', 'sc_age_cat')
 # chis.freq_2way('SRAGE', 'sc_age_cat')
+# =============================================================================
 
 acs.freq_1way('sc_age_cat', "PWGTP", include_unweighted=True)
 
 
-# =============================================================================
-# HISPANIC - IS HISPANIC
-#     sc_hisp
-#         chis: srh
-#         acs: hisp
-# =============================================================================
-acs.data_construct('sc_hisp', ['HISP == 1', 'HISP != 1'], [2, 1])
-# acs.freq_2way('HISP', 'sc_hisp')
+
+# In[ ]:
+
+
+acs.data_construct('sc_hisp', ['HISP == 1', 'HISP != 1'], [1, 2])
+acs.freq_2way('HISP', 'sc_hisp')
 
 chis.data_construct('sc_hisp', ['SRH == 1', 'SRH != 1'], [1, 2])
-# chis.freq_2way('SRH', 'sc_hisp')
+chis.freq_2way('SRH', 'sc_hisp')
 
 acs.freq_1way('sc_hisp', "PWGTP", include_unweighted=True)
+# In[ ]:
 
 
-# =============================================================================
-# RACE/ETHNICITY
-#     sc_race_ethi
-#         chis: OMBSRREO
-#         acs: rac1p
-# =============================================================================
 acs.data_construct('sc_race_ethi', [
-    'HISP != 1', 'RAC1P == 1', 'RAC1P == 2', 'RAC1P == 3 | RAC1P == 4 |RAC1P == 5',
+    'HISP == 1', 'RAC1P == 1', 'RAC1P == 2', 'RAC1P == 3 | RAC1P == 4 |RAC1P == 5',
     'RAC1P == 6', 'RAC1P == 7', 'RAC1P == 8 | RAC1P == 9'
 ], [1, 2, 3, 4, 5, 6, 7])
 
 chis.copy_column('OMBSRREO','sc_race_ethi')
 
-# acs.freq_multiway(['sc_hisp', 'RAC1P','sc_race_ethi'])
-# chis.freq_2way('OMBSRREO', 'sc_race_ethi')
-acs.freq_1way('sc_race_ethi', "PWGTP", include_unweighted=True)
+acs.freq_multiway(['sc_hisp', 'RAC1P','sc_race_ethi'])
+chis.freq_2way('OMBSRREO', 'sc_race_ethi')
 
 
-# =============================================================================
-# CITIZENSHIP 
-#     sc_cit
-#         chis: CITIZEN2
-#         acs: CIT
-# =============================================================================
+# In[ ]:
+
+
 acs.data_construct('sc_cit', ['CIT == 1|CIT == 2|CIT==3', 'CIT ==4', 'CIT==5'],
                    [1, 2, 3])
 chis.copy_column('CITIZEN2', "sc_cit")
 
-# acs.freq_2way('CIT', 'sc_cit')
-# chis.freq_2way('CITIZEN2', 'sc_cit')
+acs.freq_2way('CIT', 'sc_cit')
+chis.freq_2way('CITIZEN2', 'sc_cit')
 
-# acs.freq_1way('sc_cit')
-# chis.freq_1way('sc_cit')
-acs.freq_1way('sc_cit', "PWGTP", include_unweighted=True)
-
+acs.freq_1way('sc_cit')
+chis.freq_1way('sc_cit')
 
 
-# =============================================================================
-# EDUCATION
-#     sc_edu
-#         chis: sreduc
-#         acs: SCHL
-# =============================================================================
+# In[ ]:
+
 
 acs.data_construct('sc_edu', [
-    'SCHL >= 1 & SCHL <= 15', 
-    'SCHL >= 16 & SCHL <= 17',
-    'SCHL >= 18 & SCHL <= 20', 
-    'SCHL >= 21'
-], [1, 2, 3, 4])
+    'SCHL >= 4 & SCHL <= 11', 'SCHL >= 12 & SCHL <= 14',
+    'SCHL >= 15 & SCHL <= 17', 'SCHL >= 18 & SCHL <= 19', 'SCHL == 20',
+    'SCHL == 21', 'SCHL == 22', 'SCHL == 23', 'SCHL == 24',
+    'SCHL >= 1 & SCHL <= 3', 'SCHL == -9'
+], [1, 2, 3, 4, 6, 7, 9, 8, 10, 91, 91])
 
-chis.copy_column('SREDUC', 'sc_edu')
+chis.copy_column('AHEDUC', 'sc_edu')
 
 # acs.freq_2way("SCHL", 'sc_edu')
 # chis.freq_2way("AHEDUC", 'sc_edu')
 
-# acs.freq_1way('sc_edu')
-# chis.freq_1way('sc_edu')
+acs.freq_1way('sc_edu')
+chis.freq_1way('sc_edu')
 
-acs.freq_1way('sc_edu', "PWGTP", include_unweighted=True)
 
-# =============================================================================
-# INSURED
-#     sc_ins
-#         chis: INS
-#         acs: HICOV
-# =============================================================================
+# In[ ]:
+
 
 acs.copy_column('HICOV', "sc_ins")
 chis.copy_column('INS', "sc_ins")
 
-# acs.freq_1way('sc_ins')
-# chis.freq_1way('sc_ins')
-
-acs.freq_1way('sc_ins', "PWGTP", include_unweighted=True)
+acs.freq_1way('sc_ins')
+chis.freq_1way('sc_ins')
 
 
-# =============================================================================
-# EMPLOYED
-#     sc_emp
-#         chis: WRKST
-#         acs: ESR
-# =============================================================================
+# In[ ]:
+
+
 acs.data_construct('sc_emp', ['ESR == 1|ESR ==4', 'ESR == 2|ESR ==5','ESR == 3|ESR ==6' ], [1,2, 3])
 chis.data_construct('sc_emp', ['WRKST == 1|WRKST == 2', 'WRKST == 3', 'WRKST == 4|WRKST == 5'], [1,2,3])
 
 
-# acs.freq_2way('ESR', 'sc_emp')
-# chis.freq_2way('WRKST', 'sc_emp')
+acs.freq_2way('ESR', 'sc_emp')
+chis.freq_2way('WRKST', 'sc_emp')
 
-# acs.freq_1way('sc_emp')
-# chis.freq_1way('sc_emp')
-
-acs.freq_1way('sc_emp', "PWGTP", include_unweighted=True)
+acs.freq_1way('sc_emp')
+chis.freq_1way('sc_emp')
 
 
-# =============================================================================
-# HOUSING TENURE
-#     sc_housing
-#         chis: srtenr
-#         acs: ten
-# =============================================================================
+# In[ ]:
+
+
+# acs.freq_1way('TEN')
+
 acs.data_construct('sc_housing', ['TEN == 1 | TEN == 2', 'TEN == 3 | TEN == 4'], [1,2])
 chis.copy_column('SRTENR', "sc_housing")
 # acs.freq_2way('TEN', "sc_housing")
 
-# acs.freq_1way('sc_housing')
-# chis.freq_1way('sc_housing')
-
-acs.freq_1way('sc_housing', "PWGTP", include_unweighted=True)
+acs.freq_1way('sc_housing')
+chis.freq_1way('sc_housing')
 
 
-# =============================================================================
-# POVERTY LEVEL
-#     sc_poverty
-#         chis: povll
-#         acs: POVPIO
-# =============================================================================
+# In[ ]:
+
+
 acs.data_construct('sc_poverty', ['POVPIP <= 99', 'POVPIP >= 100 & POVPIP <= 199',
                    'POVPIP >= 200 & POVPIP <= 299', 'POVPIP >= 300'], [1, 2, 3, 4])
 chis.copy_column('POVLL', 'sc_poverty')
 
-# acs.freq_1way('sc_poverty')
-# chis.freq_1way('sc_poverty')
-
-acs.freq_1way('sc_poverty', "PWGTP", include_unweighted=True)
+acs.freq_1way('sc_poverty')
+chis.freq_1way('sc_poverty')
 
 
-# =============================================================================
-# MARITAL STATUS 
-#     sc_marit
-#         chis: AH43
-#         acs: mar
-# =============================================================================
+# In[ ]:
+
+
 acs.copy_column('MAR', 'sc_marit')
 chis.data_construct('sc_marit', ['AH43 == 1', 'AH43 == 3', 'AH43 == 4',
                     'AH43 == 5', 'AH43 == 2|AH43 == 6'], [1, 2, 3, 4, 5])
 
-# chis.freq_2way('AH43', 'sc_marit')
-# acs.freq_1way('sc_marit')
-# chis.freq_1way('sc_marit')
+chis.freq_2way('AH43', 'sc_marit')
 
-acs.freq_1way('sc_marit', "PWGTP", include_unweighted=True)
+acs.freq_1way('sc_marit')
+chis.freq_1way('sc_marit')
+
+
+# In[ ]:
 
 
 chis.select_columns(prefixes= ['sc_', 'RAKEDW'])
 acs.select_columns(prefixes=['sc', 'PWGTP', 'PUMA10', 'PUMA20', 'REGION', 'ST'])
 
 
+# In[ ]:
 
-# =============================================================================
-# DATA OUTPUT
-# =============================================================================
 
-acs.export_data('acs_for_model', 'csv', include_freq_report=False, folder_path='Data/Output Data')
-chis.export_data('chis_dummy_for_model', 'csv', include_freq_report=False, folder_path='Data//Output Data')
+acs.export_data('acs', 'csv', include_freq_report=True, max_categories=20, folder_path='Data/Output Data')
+chis.export_data('chis', 'csv', include_freq_report=True, max_categories=20, folder_path='Data//Output Data')
+
+
+# In[ ]:
+
+
+acs.export_data('acs', 'stata', include_freq_report=True, max_categories=20, folder_path='Data/Output Data')
+chis.export_data('chis', 'stata', include_freq_report=True, max_categories=20, folder_path='Data//Output Data')
+
+
+# In[ ]:
+
+
+acs_model = acs.return_data()
+
+
+# In[ ]:
+
+
+import pysurveys as ps
+
+
+# In[ ]:
 
 
 
