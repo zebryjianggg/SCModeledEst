@@ -60,7 +60,7 @@ This project aims to:
 ## Usage
 1. **Run the script:**
    ```bash
-   python Step\ 1_Produce\ ACS\ and\ SAS\ Data.py
+   python Step 1_Produce ACS and SAS Data.py
    ```
 
 2. **Script Breakdown:**
