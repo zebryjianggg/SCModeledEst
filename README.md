@@ -117,7 +117,7 @@ This project aims to:
 ## Project Structure
 ```
 .
-├── Data/
+├── Data/xxx
 │   ├── ACS_5YR/
 │   │   └── 2018_2022/
 │   │       ├── csv_pca/
